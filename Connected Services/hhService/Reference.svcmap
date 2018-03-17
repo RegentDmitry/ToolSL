@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ReferenceGroup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ID="7b97b837-d5fe-433c-90a1-3d0a7cf70c9c" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
+  <ClientOptions>
+    <GenerateAsynchronousMethods>false</GenerateAsynchronousMethods>
+    <GenerateTaskBasedAsynchronousMethod>true</GenerateTaskBasedAsynchronousMethod>
+    <EnableDataBinding>true</EnableDataBinding>
+    <ExcludedTypes />
+    <ImportXmlTypes>false</ImportXmlTypes>
+    <GenerateInternalTypes>false</GenerateInternalTypes>
+    <GenerateMessageContracts>false</GenerateMessageContracts>
+    <NamespaceMappings />
+    <CollectionMappings />
+    <GenerateSerializableTypes>true</GenerateSerializableTypes>
+    <Serializer>Auto</Serializer>
+    <UseSerializerForFaults>true</UseSerializerForFaults>
+    <ReferenceAllAssemblies>true</ReferenceAllAssemblies>
+    <ReferencedAssemblies />
+    <ReferencedDataContractTypes />
+    <ServiceContractMappings />
+  </ClientOptions>
+  <MetadataSources>
+    <MetadataSource Address="http://173.212.225.109:999/ImportService.svc" Protocol="http" SourceId="1" />
+  </MetadataSources>
+  <Metadata>
+    <MetadataFile FileName="ImportService31.xsd" MetadataType="Schema" ID="831a4083-7383-4024-9f89-2d8c48472abf" SourceId="1" SourceUrl="http://173.212.225.109:999/ImportService.svc?xsd=xsd1" />
+    <MetadataFile FileName="ImportService.xsd" MetadataType="Schema" ID="04b75fc9-5b4b-4fae-a4c6-cef80d1dd62f" SourceId="1" SourceUrl="http://173.212.225.109:999/ImportService.svc?xsd=xsd3" />
+    <MetadataFile FileName="ImportService3.xsd" MetadataType="Schema" ID="3ae32275-f51a-4da0-8fe5-cfc5ec8e912b" SourceId="1" SourceUrl="http://173.212.225.109:999/ImportService.svc?xsd=xsd2" />
+    <MetadataFile FileName="ImportService1.disco" MetadataType="Disco" ID="bb00aed7-bf9e-4db3-b0b5-8354b9146cd4" SourceId="1" SourceUrl="http://173.212.225.109:999/ImportService.svc?disco" />
+    <MetadataFile FileName="ImportService32.xsd" MetadataType="Schema" ID="ab001a6b-19eb-4501-bb0b-df1b1b7b30f1" SourceId="1" SourceUrl="http://173.212.225.109:999/ImportService.svc?xsd=xsd0" />
+    <MetadataFile FileName="ImportService1.wsdl" MetadataType="Wsdl" ID="a2945576-a908-497c-a700-e2ca30ebeb1c" SourceId="1" SourceUrl="http://173.212.225.109:999/ImportService.svc?wsdl" />
+  </Metadata>
+  <Extensions>
+    <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />
+    <ExtensionFile FileName="configuration.svcinfo" Name="configuration.svcinfo" />
+  </Extensions>
+</ReferenceGroup>

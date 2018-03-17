@@ -1,0 +1,325 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:wsap="http://schemas.xmlsoap.org/ws/2004/08/addressing/policy" xmlns:wsa10="http://www.w3.org/2005/08/addressing" xmlns:tns="http://tempuri.org/" xmlns:msc="http://schemas.microsoft.com/ws/2005/12/wsdl/contract" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:wsx="http://schemas.xmlsoap.org/ws/2004/09/mex" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata" xmlns:wsa="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:xsd="http://www.w3.org/2001/XMLSchema" name="ImportService" targetNamespace="http://tempuri.org/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <xsd:schema targetNamespace="http://tempuri.org/Imports">
+      <xsd:import schemaLocation="http://173.212.225.109:999/ImportService.svc?xsd=xsd0" namespace="http://tempuri.org/" />
+      <xsd:import schemaLocation="http://173.212.225.109:999/ImportService.svc?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+      <xsd:import schemaLocation="http://173.212.225.109:999/ImportService.svc?xsd=xsd2" namespace="http://schemas.datacontract.org/2004/07/ImportService" />
+      <xsd:import schemaLocation="http://173.212.225.109:999/ImportService.svc?xsd=xsd3" namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
+    </xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="IServiceImport_CheckConnection_InputMessage">
+    <wsdl:part name="parameters" element="tns:CheckConnection" />
+  </wsdl:message>
+  <wsdl:message name="IServiceImport_CheckConnection_OutputMessage">
+    <wsdl:part name="parameters" element="tns:CheckConnectionResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServiceImport_RegisterToken_InputMessage">
+    <wsdl:part name="parameters" element="tns:RegisterToken" />
+  </wsdl:message>
+  <wsdl:message name="IServiceImport_RegisterToken_OutputMessage">
+    <wsdl:part name="parameters" element="tns:RegisterTokenResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServiceImport_CheckFileHash_InputMessage">
+    <wsdl:part name="parameters" element="tns:CheckFileHash" />
+  </wsdl:message>
+  <wsdl:message name="IServiceImport_CheckFileHash_OutputMessage">
+    <wsdl:part name="parameters" element="tns:CheckFileHashResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServiceImport_SendFile_InputMessage">
+    <wsdl:part name="parameters" element="tns:SendFile" />
+  </wsdl:message>
+  <wsdl:message name="IServiceImport_SendFile_OutputMessage">
+    <wsdl:part name="parameters" element="tns:SendFileResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServiceImport_RegisterFile_InputMessage">
+    <wsdl:part name="parameters" element="tns:RegisterFile" />
+  </wsdl:message>
+  <wsdl:message name="IServiceImport_RegisterFile_OutputMessage">
+    <wsdl:part name="parameters" element="tns:RegisterFileResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServiceImport_GetFolders_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetFolders" />
+  </wsdl:message>
+  <wsdl:message name="IServiceImport_GetFolders_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetFoldersResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServiceImport_CreateFolder_InputMessage">
+    <wsdl:part name="parameters" element="tns:CreateFolder" />
+  </wsdl:message>
+  <wsdl:message name="IServiceImport_CreateFolder_OutputMessage">
+    <wsdl:part name="parameters" element="tns:CreateFolderResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServiceImport_GetPlayers_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetPlayers" />
+  </wsdl:message>
+  <wsdl:message name="IServiceImport_GetPlayers_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetPlayersResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServiceImport_SavePlayer_InputMessage">
+    <wsdl:part name="parameters" element="tns:SavePlayer" />
+  </wsdl:message>
+  <wsdl:message name="IServiceImport_SavePlayer_OutputMessage">
+    <wsdl:part name="parameters" element="tns:SavePlayerResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServiceImport_RemovePlayer_InputMessage">
+    <wsdl:part name="parameters" element="tns:RemovePlayer" />
+  </wsdl:message>
+  <wsdl:message name="IServiceImport_RemovePlayer_OutputMessage">
+    <wsdl:part name="parameters" element="tns:RemovePlayerResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServiceImport_ApprovePlayer_InputMessage">
+    <wsdl:part name="parameters" element="tns:ApprovePlayer" />
+  </wsdl:message>
+  <wsdl:message name="IServiceImport_ApprovePlayer_OutputMessage">
+    <wsdl:part name="parameters" element="tns:ApprovePlayerResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServiceImport_DisablePlayer_InputMessage">
+    <wsdl:part name="parameters" element="tns:DisablePlayer" />
+  </wsdl:message>
+  <wsdl:message name="IServiceImport_DisablePlayer_OutputMessage">
+    <wsdl:part name="parameters" element="tns:DisablePlayerResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServiceImport_EnablePlayer_InputMessage">
+    <wsdl:part name="parameters" element="tns:EnablePlayer" />
+  </wsdl:message>
+  <wsdl:message name="IServiceImport_EnablePlayer_OutputMessage">
+    <wsdl:part name="parameters" element="tns:EnablePlayerResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServiceImport_GetVersion_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetVersion" />
+  </wsdl:message>
+  <wsdl:message name="IServiceImport_GetVersion_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetVersionResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServiceImport_GetAllFileHashes_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetAllFileHashes" />
+  </wsdl:message>
+  <wsdl:message name="IServiceImport_GetAllFileHashes_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetAllFileHashesResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServiceImport_GetUpdate_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetUpdate" />
+  </wsdl:message>
+  <wsdl:message name="IServiceImport_GetUpdate_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetUpdateResponse" />
+  </wsdl:message>
+  <wsdl:portType name="IServiceImport">
+    <wsdl:operation name="CheckConnection">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServiceImport/CheckConnection" message="tns:IServiceImport_CheckConnection_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServiceImport/CheckConnectionResponse" message="tns:IServiceImport_CheckConnection_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="RegisterToken">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServiceImport/RegisterToken" message="tns:IServiceImport_RegisterToken_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServiceImport/RegisterTokenResponse" message="tns:IServiceImport_RegisterToken_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="CheckFileHash">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServiceImport/CheckFileHash" message="tns:IServiceImport_CheckFileHash_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServiceImport/CheckFileHashResponse" message="tns:IServiceImport_CheckFileHash_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="SendFile">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServiceImport/SendFile" message="tns:IServiceImport_SendFile_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServiceImport/SendFileResponse" message="tns:IServiceImport_SendFile_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="RegisterFile">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServiceImport/RegisterFile" message="tns:IServiceImport_RegisterFile_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServiceImport/RegisterFileResponse" message="tns:IServiceImport_RegisterFile_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetFolders">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServiceImport/GetFolders" message="tns:IServiceImport_GetFolders_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServiceImport/GetFoldersResponse" message="tns:IServiceImport_GetFolders_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="CreateFolder">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServiceImport/CreateFolder" message="tns:IServiceImport_CreateFolder_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServiceImport/CreateFolderResponse" message="tns:IServiceImport_CreateFolder_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetPlayers">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServiceImport/GetPlayers" message="tns:IServiceImport_GetPlayers_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServiceImport/GetPlayersResponse" message="tns:IServiceImport_GetPlayers_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="SavePlayer">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServiceImport/SavePlayer" message="tns:IServiceImport_SavePlayer_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServiceImport/SavePlayerResponse" message="tns:IServiceImport_SavePlayer_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="RemovePlayer">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServiceImport/RemovePlayer" message="tns:IServiceImport_RemovePlayer_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServiceImport/RemovePlayerResponse" message="tns:IServiceImport_RemovePlayer_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="ApprovePlayer">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServiceImport/ApprovePlayer" message="tns:IServiceImport_ApprovePlayer_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServiceImport/ApprovePlayerResponse" message="tns:IServiceImport_ApprovePlayer_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="DisablePlayer">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServiceImport/DisablePlayer" message="tns:IServiceImport_DisablePlayer_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServiceImport/DisablePlayerResponse" message="tns:IServiceImport_DisablePlayer_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="EnablePlayer">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServiceImport/EnablePlayer" message="tns:IServiceImport_EnablePlayer_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServiceImport/EnablePlayerResponse" message="tns:IServiceImport_EnablePlayer_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetVersion">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServiceImport/GetVersion" message="tns:IServiceImport_GetVersion_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServiceImport/GetVersionResponse" message="tns:IServiceImport_GetVersion_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetAllFileHashes">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServiceImport/GetAllFileHashes" message="tns:IServiceImport_GetAllFileHashes_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServiceImport/GetAllFileHashesResponse" message="tns:IServiceImport_GetAllFileHashes_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetUpdate">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServiceImport/GetUpdate" message="tns:IServiceImport_GetUpdate_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServiceImport/GetUpdateResponse" message="tns:IServiceImport_GetUpdate_OutputMessage" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="BasicHttpBinding_IServiceImport" type="tns:IServiceImport">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="CheckConnection">
+      <soap:operation soapAction="http://tempuri.org/IServiceImport/CheckConnection" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="RegisterToken">
+      <soap:operation soapAction="http://tempuri.org/IServiceImport/RegisterToken" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="CheckFileHash">
+      <soap:operation soapAction="http://tempuri.org/IServiceImport/CheckFileHash" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SendFile">
+      <soap:operation soapAction="http://tempuri.org/IServiceImport/SendFile" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="RegisterFile">
+      <soap:operation soapAction="http://tempuri.org/IServiceImport/RegisterFile" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetFolders">
+      <soap:operation soapAction="http://tempuri.org/IServiceImport/GetFolders" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="CreateFolder">
+      <soap:operation soapAction="http://tempuri.org/IServiceImport/CreateFolder" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetPlayers">
+      <soap:operation soapAction="http://tempuri.org/IServiceImport/GetPlayers" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SavePlayer">
+      <soap:operation soapAction="http://tempuri.org/IServiceImport/SavePlayer" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="RemovePlayer">
+      <soap:operation soapAction="http://tempuri.org/IServiceImport/RemovePlayer" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ApprovePlayer">
+      <soap:operation soapAction="http://tempuri.org/IServiceImport/ApprovePlayer" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="DisablePlayer">
+      <soap:operation soapAction="http://tempuri.org/IServiceImport/DisablePlayer" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="EnablePlayer">
+      <soap:operation soapAction="http://tempuri.org/IServiceImport/EnablePlayer" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetVersion">
+      <soap:operation soapAction="http://tempuri.org/IServiceImport/GetVersion" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetAllFileHashes">
+      <soap:operation soapAction="http://tempuri.org/IServiceImport/GetAllFileHashes" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetUpdate">
+      <soap:operation soapAction="http://tempuri.org/IServiceImport/GetUpdate" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="ImportService">
+    <wsdl:port name="BasicHttpBinding_IServiceImport" binding="tns:BasicHttpBinding_IServiceImport">
+      <soap:address location="http://173.212.225.109:999/ImportService.svc" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>
