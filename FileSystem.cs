@@ -9,9 +9,8 @@ namespace ToolSL
 {
     public static class FileSystem
     {
-        public static string AutofindFolder()
-        {
-            var path = $"C:\\Users\\{Environment.UserName}\\AppData\\Local\\PokerTracker 4\\Config\\PokerTracker.cfg";
+        public static string AutofindFolder(string path)
+        {            
             if (Alphaleonis.Win32.Filesystem.File.Exists(path))
             {
                 var lines = Alphaleonis.Win32.Filesystem.File.ReadAllLines(path);

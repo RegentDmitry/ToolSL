@@ -17,6 +17,7 @@ namespace ToolSL
         {
             var result = "";
             var mc = new ManagementClass(wmiClass);
+            var p = mc.Properties;
             var moc = mc.GetInstances();
             foreach (var o in moc)
             {
@@ -48,7 +49,9 @@ namespace ToolSL
         public static string GetMachineToken()
         {
             var modelNo = _Identifier("Win32_DiskDrive", "Model");
-            return _GetSaltedString(modelNo);
+            var computerId = _Identifier("Win32_ComputerSystemProduct", "IdentifyingNumber");
+            var uuid = _Identifier("Win32_ComputerSystemProduct", "UUID");
+            return _GetSaltedString(modelNo + computerId + uuid);
         }
 
         public static byte[] Compress(byte[] data)

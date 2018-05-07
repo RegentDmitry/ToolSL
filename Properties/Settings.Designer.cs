@@ -22,29 +22,5 @@ namespace ToolSL.Properties {
                 return defaultInstance;
             }
         }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string HistoryFolder {
-            get {
-                return ((string)(this["HistoryFolder"]));
-            }
-            set {
-                this["HistoryFolder"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("True")]
-        public bool autostartImport {
-            get {
-                return ((bool)(this["autostartImport"]));
-            }
-            set {
-                this["autostartImport"] = value;
-            }
-        }
     }
 }

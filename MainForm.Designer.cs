@@ -30,7 +30,6 @@
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
-            this.timer = new System.Windows.Forms.Timer(this.components);
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.statusLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.historyFolderTextBox = new System.Windows.Forms.TextBox();
@@ -51,20 +50,16 @@
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.closeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.startupWindows = new System.Windows.Forms.CheckBox();
+            this.changeAuthorizationButton = new System.Windows.Forms.Button();
             this.statusStrip1.SuspendLayout();
             this.contextMenuStrip1.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // timer
-            // 
-            this.timer.Interval = 1000;
-            this.timer.Tick += new System.EventHandler(this.timer_Tick);
             // 
             // statusStrip1
             // 
             this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.statusLabel});
-            this.statusStrip1.Location = new System.Drawing.Point(0, 241);
+            this.statusStrip1.Location = new System.Drawing.Point(0, 283);
             this.statusStrip1.Name = "statusStrip1";
             this.statusStrip1.Size = new System.Drawing.Size(284, 22);
             this.statusStrip1.SizingGrip = false;
@@ -80,7 +75,7 @@
             // historyFolderTextBox
             // 
             this.historyFolderTextBox.Cursor = System.Windows.Forms.Cursors.Default;
-            this.historyFolderTextBox.Location = new System.Drawing.Point(15, 25);
+            this.historyFolderTextBox.Location = new System.Drawing.Point(13, 64);
             this.historyFolderTextBox.Name = "historyFolderTextBox";
             this.historyFolderTextBox.ReadOnly = true;
             this.historyFolderTextBox.Size = new System.Drawing.Size(257, 20);
@@ -89,15 +84,15 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(12, 9);
+            this.label1.Location = new System.Drawing.Point(10, 48);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(65, 13);
+            this.label1.Size = new System.Drawing.Size(148, 13);
             this.label1.TabIndex = 4;
-            this.label1.Text = "hands folder";
+            this.label1.Text = "Processed files archive folder:";
             // 
             // selectButton
             // 
-            this.selectButton.Location = new System.Drawing.Point(144, 51);
+            this.selectButton.Location = new System.Drawing.Point(142, 90);
             this.selectButton.Name = "selectButton";
             this.selectButton.Size = new System.Drawing.Size(128, 23);
             this.selectButton.TabIndex = 5;
@@ -107,7 +102,7 @@
             // 
             // autoFindButton
             // 
-            this.autoFindButton.Location = new System.Drawing.Point(15, 51);
+            this.autoFindButton.Location = new System.Drawing.Point(13, 90);
             this.autoFindButton.Name = "autoFindButton";
             this.autoFindButton.Size = new System.Drawing.Size(123, 23);
             this.autoFindButton.TabIndex = 6;
@@ -117,17 +112,17 @@
             // 
             // startButton
             // 
-            this.startButton.Location = new System.Drawing.Point(53, 94);
+            this.startButton.Location = new System.Drawing.Point(40, 136);
             this.startButton.Name = "startButton";
-            this.startButton.Size = new System.Drawing.Size(172, 25);
+            this.startButton.Size = new System.Drawing.Size(205, 25);
             this.startButton.TabIndex = 7;
-            this.startButton.Text = "Get Hands While Playing";
+            this.startButton.Text = "Start Monitoring and Uploading Files";
             this.startButton.UseVisualStyleBackColor = true;
             this.startButton.Click += new System.EventHandler(this.startButton_Click);
             // 
             // progressBar
             // 
-            this.progressBar.Location = new System.Drawing.Point(15, 205);
+            this.progressBar.Location = new System.Drawing.Point(13, 244);
             this.progressBar.Name = "progressBar";
             this.progressBar.Size = new System.Drawing.Size(257, 23);
             this.progressBar.TabIndex = 8;
@@ -135,22 +130,22 @@
             // autoStartCheckBox
             // 
             this.autoStartCheckBox.AutoSize = true;
-            this.autoStartCheckBox.Location = new System.Drawing.Point(53, 182);
+            this.autoStartCheckBox.Location = new System.Drawing.Point(51, 221);
             this.autoStartCheckBox.Name = "autoStartCheckBox";
-            this.autoStartCheckBox.Size = new System.Drawing.Size(101, 17);
+            this.autoStartCheckBox.Size = new System.Drawing.Size(102, 17);
             this.autoStartCheckBox.TabIndex = 9;
-            this.autoStartCheckBox.Text = "auto start import";
+            this.autoStartCheckBox.Text = "Auto start import";
             this.autoStartCheckBox.UseVisualStyleBackColor = true;
             this.autoStartCheckBox.CheckedChanged += new System.EventHandler(this.autoStartCheckBox_CheckedChanged);
             // 
             // stopButton
             // 
             this.stopButton.Enabled = false;
-            this.stopButton.Location = new System.Drawing.Point(53, 125);
+            this.stopButton.Location = new System.Drawing.Point(40, 167);
             this.stopButton.Name = "stopButton";
-            this.stopButton.Size = new System.Drawing.Size(172, 25);
+            this.stopButton.Size = new System.Drawing.Size(205, 25);
             this.stopButton.TabIndex = 10;
-            this.stopButton.Text = "Stop Getting Hands";
+            this.stopButton.Text = "Stop Monitoring and Uploading Files";
             this.stopButton.UseVisualStyleBackColor = true;
             this.stopButton.Click += new System.EventHandler(this.stopButton_Click);
             // 
@@ -168,7 +163,7 @@
             this.notifyIcon.BalloonTipText = "Hand sender tool is working minimized";
             this.notifyIcon.ContextMenuStrip = this.contextMenuStrip1;
             this.notifyIcon.Icon = ((System.Drawing.Icon)(resources.GetObject("notifyIcon.Icon")));
-            this.notifyIcon.Text = "ToolSL is working";
+            this.notifyIcon.Text = "ToolSL is working (0 files updloaded during this session)";
             this.notifyIcon.Visible = true;
             this.notifyIcon.DoubleClick += new System.EventHandler(this.notifyIcon_DoubleClick);
             // 
@@ -182,62 +177,73 @@
             this.toolStripSeparator1,
             this.closeToolStripMenuItem});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(161, 104);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(243, 104);
             // 
             // openMainFormToolStripMenuItem
             // 
             this.openMainFormToolStripMenuItem.Name = "openMainFormToolStripMenuItem";
-            this.openMainFormToolStripMenuItem.Size = new System.Drawing.Size(160, 22);
-            this.openMainFormToolStripMenuItem.Text = "open main form";
+            this.openMainFormToolStripMenuItem.Size = new System.Drawing.Size(242, 22);
+            this.openMainFormToolStripMenuItem.Text = "Show program";
             this.openMainFormToolStripMenuItem.Click += new System.EventHandler(this.openMainFormToolStripMenuItem_Click);
             // 
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(157, 6);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(239, 6);
             // 
             // startContextmenuItem
             // 
             this.startContextmenuItem.Name = "startContextmenuItem";
-            this.startContextmenuItem.Size = new System.Drawing.Size(160, 22);
-            this.startContextmenuItem.Text = "start";
+            this.startContextmenuItem.Size = new System.Drawing.Size(242, 22);
+            this.startContextmenuItem.Text = "Start Monitoring and Uploading";
             this.startContextmenuItem.Click += new System.EventHandler(this.startContextmenuItem_Click);
             // 
             // stopcontextMenuItem
             // 
             this.stopcontextMenuItem.Name = "stopcontextMenuItem";
-            this.stopcontextMenuItem.Size = new System.Drawing.Size(160, 22);
-            this.stopcontextMenuItem.Text = "stop";
+            this.stopcontextMenuItem.Size = new System.Drawing.Size(242, 22);
+            this.stopcontextMenuItem.Text = "Stop Monitoring and Uploading";
             this.stopcontextMenuItem.Visible = false;
             this.stopcontextMenuItem.Click += new System.EventHandler(this.stopcontextMenuItem_Click);
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(157, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(239, 6);
             // 
             // closeToolStripMenuItem
             // 
             this.closeToolStripMenuItem.Name = "closeToolStripMenuItem";
-            this.closeToolStripMenuItem.Size = new System.Drawing.Size(160, 22);
-            this.closeToolStripMenuItem.Text = "close";
+            this.closeToolStripMenuItem.Size = new System.Drawing.Size(242, 22);
+            this.closeToolStripMenuItem.Text = "Exit program";
             this.closeToolStripMenuItem.Click += new System.EventHandler(this.closeToolStripMenuItem_Click_1);
             // 
             // startupWindows
             // 
             this.startupWindows.AutoSize = true;
-            this.startupWindows.Location = new System.Drawing.Point(53, 159);
+            this.startupWindows.Location = new System.Drawing.Point(51, 198);
             this.startupWindows.Name = "startupWindows";
-            this.startupWindows.Size = new System.Drawing.Size(169, 17);
+            this.startupWindows.Size = new System.Drawing.Size(170, 17);
             this.startupWindows.TabIndex = 13;
-            this.startupWindows.Text = "run tool when startup windows";
+            this.startupWindows.Text = "Run tool with Windows startup";
             this.startupWindows.UseVisualStyleBackColor = true;
             this.startupWindows.CheckedChanged += new System.EventHandler(this.startupWindows_CheckedChanged);
+            // 
+            // changeAuthorizationButton
+            // 
+            this.changeAuthorizationButton.Location = new System.Drawing.Point(51, 16);
+            this.changeAuthorizationButton.Name = "changeAuthorizationButton";
+            this.changeAuthorizationButton.Size = new System.Drawing.Size(172, 25);
+            this.changeAuthorizationButton.TabIndex = 14;
+            this.changeAuthorizationButton.Text = "Change login and password";
+            this.changeAuthorizationButton.UseVisualStyleBackColor = true;
+            this.changeAuthorizationButton.Click += new System.EventHandler(this.changeAuthorizationButton_Click);
             // 
             // MainForm
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
-            this.ClientSize = new System.Drawing.Size(284, 263);
+            this.ClientSize = new System.Drawing.Size(284, 305);
+            this.Controls.Add(this.changeAuthorizationButton);
             this.Controls.Add(this.startupWindows);
             this.Controls.Add(this.processLabel);
             this.Controls.Add(this.stopButton);
@@ -254,7 +260,7 @@
             this.MinimumSize = new System.Drawing.Size(300, 154);
             this.Name = "MainForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Hand sender tool";
+            this.Text = "ToolSL";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
             this.Resize += new System.EventHandler(this.MainForm_Resize);
             this.statusStrip1.ResumeLayout(false);
@@ -267,7 +273,6 @@
 
         #endregion
 
-        private System.Windows.Forms.Timer timer;
         private System.Windows.Forms.StatusStrip statusStrip1;
         private System.Windows.Forms.ToolStripStatusLabel statusLabel;
         private System.Windows.Forms.TextBox historyFolderTextBox;
@@ -288,6 +293,7 @@
         private System.Windows.Forms.ToolStripMenuItem openMainFormToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
         private System.Windows.Forms.CheckBox startupWindows;
+        private System.Windows.Forms.Button changeAuthorizationButton;
     }
 }
 

@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using IWshRuntimeLibrary;
@@ -16,19 +19,28 @@ namespace ToolSL
         private bool workAllowed = false;
         private List<string> hashes = new List<string>();
         bool allowedClosing = false;
+        int sessionCounter = 0;
+        private Options Options = new Options();
 
-        private string HashFilePath
+        private string AppDataFolder => $"{Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)}\\ToolSL\\";
+        private string OptionsFilePath => $"{AppDataFolder}options.xml";
+        private string HashFilePath => $"{AppDataFolder}filehashes.xml";
+
+        private FileSystemWatcher TxtFileWatcher = new FileSystemWatcher();
+        private FileSystemWatcher XmlFileWatcher = new FileSystemWatcher();
+
+        private List<string> ImportList = new List<string>();
+
+        private void LoadOptions()
         {
-            get
-            {
-                var folder = Alphaleonis.Win32.Filesystem.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
-                return $"{folder}\\filehashes.xml";
-            }
+            if (Alphaleonis.Win32.Filesystem.File.Exists(OptionsFilePath))
+                Options = Options.Load(OptionsFilePath);
         }
 
         public MainForm()
         {
             InitializeComponent();
+            LoadOptions();
             Init();
         }
 
@@ -38,6 +50,64 @@ namespace ToolSL
             MessageBox.Show("Can't connect to import server", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             allowedClosing = true;
             Close();
+        }
+
+        public void RegisterNewToken(bool closeProgram = false)
+        {
+            var answer = "Not allowed";
+            var counter = 0;
+            string login = string.Empty;
+            string password = string.Empty;
+            while (answer == "Not allowed")
+            {
+                counter++;
+                if (counter == 4)
+                {
+                    if (closeProgram)
+                    {
+                        allowedClosing = true;
+                        Close();
+                    }
+                    return;
+                }
+                var passform = new LoginForm();
+                passform.SetData(login, password);
+                var res = passform.ShowDialog(this);
+                login = passform.Login;
+                password = passform.Password;
+                if (res == DialogResult.OK)
+                {
+                    try
+                    {
+                        answer = Remote.Service.RegisterToken(login, password, Utils.MachineToken, "USER");
+                    }
+                    catch (Exception ex)
+                    {
+                        if (ex is System.ServiceModel.EndpointNotFoundException)
+                        {
+                            MessageBox.Show("Server is not available", "Login problem", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            NoConnectionClose();
+                        }
+                        else
+                        {
+                            throw ex;
+                        }
+                    }
+                }
+                if (res == DialogResult.Cancel)
+                {
+                    if (closeProgram)
+                    {
+                        allowedClosing = true;
+                        Close();
+                    }
+                    return;
+                }
+                if (answer == "Not allowed")
+                {
+                    MessageBox.Show("Wrong login or password, please try again. If nothing helps ask SpinLegends Team.", "Wrong password", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
+            }
         }
 
         public void Init()
@@ -55,39 +125,7 @@ namespace ToolSL
 
             if (!allowedConnection)
             {
-                var answer = "Not allowed";
-                var counter = 0;
-                while (answer == "Not allowed")
-                {
-                    counter++;
-                    if (counter == 4)
-                    {
-                        allowedClosing = true;
-                        Close();
-                        return;
-                    }
-                    var passform = new LoginForm();
-                    if (passform.ShowDialog(this) == DialogResult.OK)
-                    {
-                        var login = passform.Login;
-                        var password = passform.Password;
-                        try
-                        {
-                            answer = Remote.Service.RegisterToken(login, password, Utils.MachineToken, "USER");
-                        }
-                        catch (Exception ex)
-                        {
-                            if (ex is System.ServiceModel.EndpointNotFoundException)
-                            {
-                                NoConnectionClose();
-                            }
-                            else
-                            {
-                                throw ex;
-                            }
-                        }
-                    }
-                }
+                RegisterNewToken(closeProgram:true);
             }
 
             hhService.ClientVersion version = null;
@@ -112,16 +150,18 @@ namespace ToolSL
             var maxVersion = new Version(version.MaxVersion);
             if (productVersion.CompareTo(minVersion) < 0)
             {
-                if (MessageBox.Show("You version of tool is not supported. Please update", "Error", MessageBoxButtons.YesNo) == DialogResult.Yes)
+                if (MessageBox.Show("A new version is available. Download new version now?", "New Version", MessageBoxButtons.YesNo) == DialogResult.Yes)
                 {
                     Cursor = Cursors.WaitCursor;
 
                     try
                     {
+                        var name = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+                        var filename = string.Format($"{name}\\ToolSL_{maxVersion}_setup.msi");
                         var res = Remote.Service.GetUpdate(Utils.MachineToken);
-                        var filename = System.IO.Path.GetTempFileName().Replace(".tmp", ".msi");
                         Alphaleonis.Win32.Filesystem.File.WriteAllBytes(filename, res.Data);
-                        Process.Start(filename);
+                        if (MessageBox.Show($"ToolSL_{maxVersion}_setup.msi saved to desktop.{Environment.NewLine}Start installation now?", "New Version", MessageBoxButtons.YesNo) == DialogResult.Yes)
+                            Process.Start(filename);
                     }
                     catch (Exception ex)
                     {
@@ -142,7 +182,7 @@ namespace ToolSL
                 Close();
             }
 
-            historyFolderTextBox.Text = Properties.Settings.Default.HistoryFolder;
+            historyFolderTextBox.Text = Options.HistoryFolder;
 
             var mversion_message = string.Empty;
             if (productVersion.CompareTo(maxVersion) < 0)
@@ -151,7 +191,7 @@ namespace ToolSL
             }
 
             statusLabel.Text = $"Version: {Application.ProductVersion}{mversion_message}";
-            autoStartCheckBox.Checked = Properties.Settings.Default.autostartImport;
+            autoStartCheckBox.Checked = Options.AutostartImport;
 
             if (Alphaleonis.Win32.Filesystem.File.Exists(HashFilePath))
                 hashes = Alphaleonis.Win32.Filesystem.File.ReadAllLines(HashFilePath).ToList();
@@ -162,11 +202,15 @@ namespace ToolSL
             startupWindows.Checked = Alphaleonis.Win32.Filesystem.File.Exists(shortcutAddress);
             startupWindows.CheckedChanged += startupWindows_CheckedChanged;
 
-            if (Properties.Settings.Default.autostartImport && Alphaleonis.Win32.Filesystem.Directory.Exists(Properties.Settings.Default.HistoryFolder))
+            if (Options.AutostartImport && Alphaleonis.Win32.Filesystem.Directory.Exists(Options.HistoryFolder))
                 StartImport();
+
             isWorking = false;
 
-            //Logger.Info("program started");
+            if (!string.IsNullOrEmpty(historyFolderTextBox.Text) && Options.AutostartImport)
+            {
+                WindowState = FormWindowState.Minimized;
+            }
         }
 
         private void closeToolStripMenuItem_Click(object sender, EventArgs e)
@@ -174,14 +218,31 @@ namespace ToolSL
             Application.Exit();
         }
 
+        private void PT_AccessWaring(string path)
+        {
+            MessageBox.Show($"Hand sender tool doesn't have access to '{path}'{Environment.NewLine}You need to start ToolSL with administator rights or select folder manualy", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+        }
+
         private void autoFindButton_Click(object sender, EventArgs e)
         {
-            var dir = FileSystem.AutofindFolder();
-            if (dir != null)
+            var path = $"C:\\Users\\{Environment.UserName}\\AppData\\Local\\PokerTracker 4\\Config\\PokerTracker.cfg";
+            try
             {
-                historyFolderTextBox.Text = dir;
-                Properties.Settings.Default.HistoryFolder = dir;
-                Properties.Settings.Default.Save();
+                var dir = FileSystem.AutofindFolder(path);
+                if (dir != null)
+                {
+                    historyFolderTextBox.Text = dir;
+                    Options.HistoryFolder = dir;
+                    Options.Save(OptionsFilePath);
+                }
+                else
+                {
+                    PT_AccessWaring(path);
+                }
+            }
+            catch (Exception ex)
+            {
+                PT_AccessWaring(path);
             }
 
         }
@@ -190,14 +251,17 @@ namespace ToolSL
         {           
             using (var ofd = new FolderBrowserDialog())
             {
+                if (!string.IsNullOrEmpty(historyFolderTextBox.Text))
+                    ofd.SelectedPath = historyFolderTextBox.Text;
+
                 ofd.Description = "Select folder with histories from tracker or holdem manager";
                 if (ofd.ShowDialog() == DialogResult.OK)
                 {
                     try
                     {
                         historyFolderTextBox.Text = ofd.SelectedPath;
-                        Properties.Settings.Default.HistoryFolder = ofd.SelectedPath;
-                        Properties.Settings.Default.Save();
+                        Options.HistoryFolder = ofd.SelectedPath;
+                        Options.Save(OptionsFilePath);
                     }
                     catch (Exception ex)
                     {
@@ -209,22 +273,17 @@ namespace ToolSL
 
         private void autoStartCheckBox_CheckedChanged(object sender, EventArgs e)
         {
-            Properties.Settings.Default.autostartImport = autoStartCheckBox.Checked;
-            Properties.Settings.Default.Save();
+            Options.AutostartImport = autoStartCheckBox.Checked;
+            Options.Save(OptionsFilePath);
         }
 
         private void startButton_Click(object sender, EventArgs e)
         {
-            if (!timer.Enabled)
-                StartImport();
+            StartImport();
         }
 
-        private void StartImport()
+        private async void StartImport()
         {
-            if (timer.Enabled)
-                return;
-
-            timer.Start();
             stopButton.Enabled = true;
             startButton.Enabled = false;
             autoFindButton.Enabled = false;
@@ -232,14 +291,48 @@ namespace ToolSL
             startContextmenuItem.Visible = false;
             stopcontextMenuItem.Visible = true;
             workAllowed = true;
+
+            await Task.Factory.StartNew(() =>
+            {
+                AnalyseFileList(Alphaleonis.Win32.Filesystem.Directory.EnumerateFiles(Options.HistoryFolder, "*.*",
+                                Alphaleonis.Win32.Filesystem.DirectoryEnumerationOptions.Recursive).ToList());
+
+                TxtFileWatcher.Path = Options.HistoryFolder;
+                TxtFileWatcher.NotifyFilter = NotifyFilters.LastWrite | NotifyFilters.CreationTime | NotifyFilters.FileName | NotifyFilters.Size;
+                TxtFileWatcher.Filter = "*.txt";
+                TxtFileWatcher.Created += FileWatcher_Changed;
+                TxtFileWatcher.IncludeSubdirectories = true;
+
+                XmlFileWatcher.Path = Options.HistoryFolder;
+                XmlFileWatcher.NotifyFilter = NotifyFilters.LastWrite | NotifyFilters.CreationTime | NotifyFilters.FileName | NotifyFilters.Size;
+                XmlFileWatcher.Filter = "*.xml";
+                XmlFileWatcher.Created += FileWatcher_Changed;
+                XmlFileWatcher.IncludeSubdirectories = true;
+
+                TxtFileWatcher.EnableRaisingEvents = true;
+                XmlFileWatcher.EnableRaisingEvents = true;
+            });
+        }
+
+        private async void FileWatcher_Changed(object sender, FileSystemEventArgs e)
+        {
+            var file = e.FullPath;
+            ImportList.Add(file);
+
+            await Task.Factory.StartNew(() =>
+            {
+                if (isWorking)
+                    return;
+
+                var tempList = new List<string>();
+                tempList.AddRange(ImportList);
+                AnalyseFileList(tempList, immediately: true);
+                ImportList.RemoveAll(i => tempList.Contains(i));
+            });
         }
 
         private void StopImport()
         {
-            if (!timer.Enabled)
-                return;
-
-            timer.Stop();
             stopButton.Enabled = false;
             startButton.Enabled = true;
             autoFindButton.Enabled = true;
@@ -247,12 +340,16 @@ namespace ToolSL
             startContextmenuItem.Visible = true;
             stopcontextMenuItem.Visible = false;
             workAllowed = false;
+
+            TxtFileWatcher.Created -= FileWatcher_Changed;
+            XmlFileWatcher.Created -= FileWatcher_Changed;
+            TxtFileWatcher.EnableRaisingEvents = false;
+            XmlFileWatcher.EnableRaisingEvents = false;
         }
 
         private void stopButton_Click(object sender, EventArgs e)
         {
-            if (timer.Enabled)
-                StopImport();
+            StopImport();
         }
 
         private static string GetHashCode(string input)
@@ -271,122 +368,117 @@ namespace ToolSL
             return Convert.ToBase64String(hash);
         }
 
-        private async void timer_Tick(object sender, EventArgs e)
+        private void AnalyseFileList(List<string> list, bool immediately = false)
         {
-            if (isWorking)
-                return;
+            isWorking = true;
 
-            if (!Alphaleonis.Win32.Filesystem.Directory.Exists(Properties.Settings.Default.HistoryFolder))
+            var importList = new Dictionary<string,string>();
+            var existedFileHashes = new List<string>();
+
+            foreach (var filename in list)
             {
-                StopImport();
-                return;
+                var seconds = (DateTime.Now - Alphaleonis.Win32.Filesystem.File.GetCreationTime(filename)).TotalSeconds;
+                if (seconds < 30 && !immediately)
+                    continue;
+
+                if (immediately)
+                    Thread.Sleep(30000);
+
+                if (!filename.ToLower().EndsWith(".txt") && !filename.ToLower().EndsWith(".xml"))
+                    continue;
+
+                var hash = GetHashCode(filename.Replace(Options.HistoryFolder.Trim(new char[] { '\\' }),string.Empty));
+                existedFileHashes.Add(hash);
+                if (!hashes.Contains(hash))
+                    importList.Add(hash, filename);
             }
 
-            await Task.Factory.StartNew(() =>
+            progressBar.Invoke((MethodInvoker)delegate
             {
-                isWorking = true;
-                var importList = new Dictionary<string,string>();
-                var existedFileHashes = new List<string>();
-                foreach (var filename in Alphaleonis.Win32.Filesystem.Directory.EnumerateFiles(Properties.Settings.Default.HistoryFolder, "*.*", 
-                                                                      Alphaleonis.Win32.Filesystem.DirectoryEnumerationOptions.Recursive))
+                progressBar.Maximum = importList.Count();
+                progressBar.Value = 0;
+            });
+
+            var counter = 0;
+            foreach (var item in importList)
+            {
+                counter++;
+
+                processLabel.Invoke((MethodInvoker)delegate
                 {
-                    var hash = GetHashCode(filename.Replace(Properties.Settings.Default.HistoryFolder.Trim(new char[] { '\\' }),string.Empty));
-                    existedFileHashes.Add(hash);
-                    if (!hashes.Contains(hash))
-                        importList.Add(hash, filename);
+                    processLabel.Text = $"File {counter} of {importList.Count}";
+                });
+                    
+                if (!workAllowed)
+                {
+                    Invoke((MethodInvoker)delegate
+                    {
+                        progressBar.Value = 0;
+                    });
+                    break;
                 }
 
-                var removingHashes = new List<string>();
-                foreach (var h in hashes)
+                if (!Alphaleonis.Win32.Filesystem.File.Exists(HashFilePath))
                 {
-                    if (!existedFileHashes.Contains(h))
-                        removingHashes.Add(h);
-                }
-                if (removingHashes.Count != 0)
-                {
-                    hashes.RemoveAll(item => removingHashes.Contains(item));
-                    Alphaleonis.Win32.Filesystem.File.WriteAllLines(HashFilePath, hashes);
+                    Alphaleonis.Win32.Filesystem.File.WriteAllText(HashFilePath, string.Empty);
                 }
 
-                foreach (var h in removingHashes)
-                    hashes.Remove(h);
+                var bytes = Alphaleonis.Win32.Filesystem.File.ReadAllBytes(item.Value);
+                var hash = GetDataHash(bytes);
+
+                SendFile(hash, item.Key, item.Value, bytes);
 
                 progressBar.Invoke((MethodInvoker)delegate
                 {
-                    progressBar.Maximum = importList.Count();
-                    progressBar.Value = 0;
+                    progressBar.Value++;
                 });
-
-                var counter = 0;
-                foreach (var item in importList)
-                {
-                    counter++;
-
-                    processLabel.Invoke((MethodInvoker)delegate
-                    {
-                        processLabel.Text = $"File {counter} of {importList.Count}";
-                    });
-                    
-                    if (!workAllowed)
-                    {
-                        Invoke((MethodInvoker)delegate
-                        {
-                            progressBar.Value = 0;
-                        });
-                        break;
-                    }
-
-                    if (!Alphaleonis.Win32.Filesystem.File.Exists(HashFilePath))
-                    {
-                        Alphaleonis.Win32.Filesystem.File.WriteAllText(HashFilePath, string.Empty);
-                    }
-
-                    var bytes = Alphaleonis.Win32.Filesystem.File.ReadAllBytes(item.Value);
-                    var hash = GetDataHash(bytes);
-
-                    try
-                    {
-                        var result = Remote.Service.CheckFileHash(Utils.MachineToken, hash);
-                        if (result == "OK")
-                        {
-                            if (Remote.Service.SendFile(Utils.MachineToken, hash,
-                                                        item.Value.Replace(Properties.Settings.Default.HistoryFolder, string.Empty).Trim(new char[] { '\\' }),
-                                                        Utils.Compress(bytes)) == "OK")
-                            {
-                                Alphaleonis.Win32.Filesystem.File.AppendAllText(HashFilePath, item.Key + Environment.NewLine);
-                                hashes.Add(item.Key);
-                            }
-                        }
-                        if (result == "Has file")
-                        {
-                            Alphaleonis.Win32.Filesystem.File.AppendAllText(HashFilePath, item.Key + Environment.NewLine);
-                            hashes.Add(item.Key);
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        if (ex is System.ServiceModel.EndpointNotFoundException)
-                        {
-                            NoConnectionClose();
-                        }
-                        else
-                        {
-                            throw ex;
-                        }
-                    }
-
-                    progressBar.Invoke((MethodInvoker)delegate
-                    {
-                        progressBar.Value++;
-                    });
-                }
-                Invoke((MethodInvoker)delegate
-                {
-                    processLabel.Text = string.Empty;
-                });
-
-                isWorking = false;
+            }
+            Invoke((MethodInvoker)delegate
+            {
+                processLabel.Text = string.Empty;
             });
+
+            isWorking = false;
+
+            CreateTextIcon(0);
+        }
+
+
+        private void SendFile(string hash, string key, string value, byte[] bytes)
+        {
+            try
+            {
+                var result = Remote.Service.CheckFileHash(Utils.MachineToken, hash);
+                if (result == "OK")
+                {
+                    if (Remote.Service.SendFile(Utils.MachineToken, hash,
+                                                value.Replace(Options.HistoryFolder, string.Empty).Trim(new char[] { '\\' }),
+                                                Utils.Compress(bytes)) == "OK")
+                    {
+                        Alphaleonis.Win32.Filesystem.File.AppendAllText(HashFilePath, key + Environment.NewLine);
+                        hashes.Add(key);
+
+                        sessionCounter++;
+                        if (sessionCounter == 8)
+                            sessionCounter = 0;
+
+                        CreateTextIcon(sessionCounter);
+
+                        notifyIcon.Text = $"ToolSL is working ({sessionCounter} files updloaded during this session)";
+                    }
+                }
+                if (result == "Has file")
+                {
+                    Alphaleonis.Win32.Filesystem.File.AppendAllText(HashFilePath, key + Environment.NewLine);
+                    hashes.Add(key);
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.Error($"Sending problem {ex.Message} : {ex.StackTrace}");
+                Thread.Sleep(10000);
+                SendFile(hash, key, value, bytes);
+            }
         }
 
         private void MainForm_Resize(object sender, EventArgs e)
@@ -457,8 +549,58 @@ namespace ToolSL
             if (!allowedClosing)
             {
                 e.Cancel = true;
-                Hide();
+                WindowState = FormWindowState.Minimized;
             }
         }
+
+        private void changeAuthorizationButton_Click(object sender, EventArgs e)
+        {            
+            RegisterNewToken(closeProgram:false);
+        }
+
+        public static Icon GetIcon(int counter)
+        {
+            //Create bitmap, kind of canvas
+            Bitmap bitmap = new Bitmap(32, 32);
+
+            Icon icon = Properties.Resources.white_icon;
+
+            SolidBrush drawBrush = new SolidBrush(Color.Red);
+
+            Graphics graphics = Graphics.FromImage(bitmap);
+
+            graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.SingleBitPerPixel;
+            graphics.DrawIcon(icon, 0, 0);
+
+            //graphics.FillEllipse(new SolidBrush(Color.White), 0, 0, 32, 32);
+
+            if (counter != 0)
+            {
+                graphics.DrawArc(new Pen(new SolidBrush(Color.LimeGreen),6), new Rectangle(2, 2, 27, 27), 45 * counter, 45 * (counter + 1));
+            }
+
+            Icon createdIcon = Icon.FromHandle(bitmap.GetHicon());
+
+            drawBrush.Dispose();
+            graphics.Dispose();
+            bitmap.Dispose();
+
+            return createdIcon;
+        }
+
+        public void CreateTextIcon(int counter)
+        {
+            try
+            {
+                if (notifyIcon != null)
+                    notifyIcon.Icon = GetIcon(counter);
+            }
+            catch
+            {
+
+            }
+
+        }
+       
     }
 }
