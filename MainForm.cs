@@ -29,8 +29,6 @@ namespace ToolSL
         private FileSystemWatcher TxtFileWatcher = new FileSystemWatcher();
         private FileSystemWatcher XmlFileWatcher = new FileSystemWatcher();
 
-        private List<string> ImportList = new List<string>();
-
         private void LoadOptions()
         {
             if (Alphaleonis.Win32.Filesystem.File.Exists(OptionsFilePath))
@@ -317,17 +315,15 @@ namespace ToolSL
         private async void FileWatcher_Changed(object sender, FileSystemEventArgs e)
         {
             var file = e.FullPath;
-            ImportList.Add(file);
 
             await Task.Factory.StartNew(() =>
             {
-                if (isWorking)
-                    return;
+                while (isWorking)
+                    Thread.Sleep(500);
 
                 var tempList = new List<string>();
-                tempList.AddRange(ImportList);
-                AnalyseFileList(tempList, immediately: true);
-                ImportList.RemoveAll(i => tempList.Contains(i));
+                tempList.Add(file);
+                AnalyseFileList(tempList);
             });
         }
 
@@ -368,22 +364,15 @@ namespace ToolSL
             return Convert.ToBase64String(hash);
         }
 
-        private void AnalyseFileList(List<string> list, bool immediately = false)
+        private void AnalyseFileList(List<string> list)
         {
             isWorking = true;
 
             var importList = new Dictionary<string,string>();
             var existedFileHashes = new List<string>();
-
+        
             foreach (var filename in list)
             {
-                var seconds = (DateTime.Now - Alphaleonis.Win32.Filesystem.File.GetCreationTime(filename)).TotalSeconds;
-                if (seconds < 30 && !immediately)
-                    continue;
-
-                if (immediately)
-                    Thread.Sleep(30000);
-
                 if (!filename.ToLower().EndsWith(".txt") && !filename.ToLower().EndsWith(".xml"))
                     continue;
 
@@ -418,15 +407,17 @@ namespace ToolSL
                     break;
                 }
 
+                var bytes = ReadFile(item.Value);
+                if (bytes == null)
+                    continue;
+                var hash = GetDataHash(bytes);
+
+                SendFile(hash, item.Key, item.Value, bytes);
+
                 if (!Alphaleonis.Win32.Filesystem.File.Exists(HashFilePath))
                 {
                     Alphaleonis.Win32.Filesystem.File.WriteAllText(HashFilePath, string.Empty);
                 }
-
-                var bytes = Alphaleonis.Win32.Filesystem.File.ReadAllBytes(item.Value);
-                var hash = GetDataHash(bytes);
-
-                SendFile(hash, item.Key, item.Value, bytes);
 
                 progressBar.Invoke((MethodInvoker)delegate
                 {
@@ -443,6 +434,20 @@ namespace ToolSL
             CreateTextIcon(0);
         }
 
+        private byte[] ReadFile(string filename, int attemps = 10)
+        {
+            if (attemps == 0)
+                return null;
+            try
+            {
+                return Alphaleonis.Win32.Filesystem.File.ReadAllBytes(filename);
+            }
+            catch (Exception ex)
+            {
+                Thread.Sleep(500);
+                return ReadFile(filename, attemps - 1);
+            }
+        }
 
         private void SendFile(string hash, string key, string value, byte[] bytes)
         {
