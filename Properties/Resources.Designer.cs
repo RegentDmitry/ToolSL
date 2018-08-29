@@ -61,6 +61,16 @@ namespace ToolSL.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to There are no summary files in your upload. Please check PokerStars client options.
+        ///Please, ask for help in SpinLegends support chat in Skype, if you don&apos;t know how to fix it..
+        /// </summary>
+        internal static string noSummaryWarning {
+            get {
+                return ResourceManager.GetString("noSummaryWarning", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
         /// </summary>
         internal static System.Drawing.Icon white_icon {

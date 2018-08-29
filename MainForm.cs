@@ -21,6 +21,7 @@ namespace ToolSL
         bool allowedClosing = false;
         int sessionCounter = 0;
         private Options Options = new Options();
+        private List<string> ImportList = new List<string>();
 
         private string AppDataFolder => $"{Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)}\\ToolSL\\";
         private string OptionsFilePath => $"{AppDataFolder}options.xml";
@@ -28,6 +29,9 @@ namespace ToolSL
 
         private FileSystemWatcher TxtFileWatcher = new FileSystemWatcher();
         private FileSystemWatcher XmlFileWatcher = new FileSystemWatcher();
+
+        private long historiesSessionCounter = 0;
+        private long summariesSessionCounter = 0;
 
         private void LoadOptions()
         {
@@ -310,21 +314,17 @@ namespace ToolSL
                 TxtFileWatcher.EnableRaisingEvents = true;
                 XmlFileWatcher.EnableRaisingEvents = true;
             });
+
+            importTimer.Start();
         }
 
-        private async void FileWatcher_Changed(object sender, FileSystemEventArgs e)
+        private void FileWatcher_Changed(object sender, FileSystemEventArgs e)
         {
             var file = e.FullPath;
-
-            await Task.Factory.StartNew(() =>
+            lock (ImportList)
             {
-                while (isWorking)
-                    Thread.Sleep(500);
-
-                var tempList = new List<string>();
-                tempList.Add(file);
-                AnalyseFileList(tempList);
-            });
+                ImportList.Add(file);
+            }
         }
 
         private void StopImport()
@@ -341,6 +341,8 @@ namespace ToolSL
             XmlFileWatcher.Created -= FileWatcher_Changed;
             TxtFileWatcher.EnableRaisingEvents = false;
             XmlFileWatcher.EnableRaisingEvents = false;
+
+            importTimer.Stop();
         }
 
         private void stopButton_Click(object sender, EventArgs e)
@@ -362,6 +364,15 @@ namespace ToolSL
             var md5 = MD5.Create();
             var hash = md5.ComputeHash(data);
             return Convert.ToBase64String(hash);
+        }
+        
+        private bool IsSpinHistoryFile(string filename, out bool isSummary)
+        {
+            isSummary = false;
+            var lines = Alphaleonis.Win32.Filesystem.File.ReadLines(filename).Take(10).ToList();
+            isSummary = lines.Any(item => item.Contains("3 players")) || lines.Any(item => item.Contains("Tournament summary"));
+            var isHistory = lines.Any(item => item.Contains("3-max"));
+            return isSummary || isHistory;
         }
 
         private void AnalyseFileList(List<string> list)
@@ -407,6 +418,19 @@ namespace ToolSL
                     break;
                 }
 
+                long length = new Alphaleonis.Win32.Filesystem.FileInfo(item.Value).Length;
+
+                if (length < 1024 * 500)
+                {
+                    if (!IsSpinHistoryFile(item.Value, out bool isSummary))
+                        continue;
+
+                    if (isSummary)
+                        summariesSessionCounter++;
+                    else
+                        historiesSessionCounter++;
+                }
+
                 var bytes = ReadFile(item.Value);
                 if (bytes == null)
                     continue;
@@ -432,6 +456,18 @@ namespace ToolSL
             isWorking = false;
 
             CreateTextIcon(0);
+
+            if (historiesSessionCounter > 5 && summariesSessionCounter == 0)
+            {
+                Invoke((MethodInvoker)delegate
+                {
+                    var form = new MessageForm(Properties.Resources.noSummaryWarning);
+                    form.ShowDialog(this);
+                });
+
+                historiesSessionCounter = 0;
+                summariesSessionCounter = 0;
+            }
         }
 
         private byte[] ReadFile(string filename, int attemps = 10)
@@ -604,8 +640,33 @@ namespace ToolSL
             {
 
             }
-
         }
-       
+
+        private async void importTimer_Tick(object sender, EventArgs e)
+        {
+            if (isWorking)
+                return;
+
+            var tempList = new List<string>();
+            lock(ImportList)
+            {
+                tempList.AddRange(ImportList);
+                ImportList.Clear();
+            }
+
+            if (tempList.Count == 0)
+                return;
+
+            await Task.Factory.StartNew(() =>
+            {
+                AnalyseFileList(tempList);
+            });
+        }
+
+        private void historyButton_Click(object sender, EventArgs e)
+        {
+            var form = new HistoryForm();
+            form.ShowDialog(this);
+        }
     }
 }

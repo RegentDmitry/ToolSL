@@ -51,6 +51,8 @@
             this.closeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.startupWindows = new System.Windows.Forms.CheckBox();
             this.changeAuthorizationButton = new System.Windows.Forms.Button();
+            this.importTimer = new System.Windows.Forms.Timer(this.components);
+            this.historyButton = new System.Windows.Forms.Button();
             this.statusStrip1.SuspendLayout();
             this.contextMenuStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -231,7 +233,7 @@
             // 
             // changeAuthorizationButton
             // 
-            this.changeAuthorizationButton.Location = new System.Drawing.Point(51, 16);
+            this.changeAuthorizationButton.Location = new System.Drawing.Point(13, 12);
             this.changeAuthorizationButton.Name = "changeAuthorizationButton";
             this.changeAuthorizationButton.Size = new System.Drawing.Size(172, 25);
             this.changeAuthorizationButton.TabIndex = 14;
@@ -239,10 +241,26 @@
             this.changeAuthorizationButton.UseVisualStyleBackColor = true;
             this.changeAuthorizationButton.Click += new System.EventHandler(this.changeAuthorizationButton_Click);
             // 
+            // importTimer
+            // 
+            this.importTimer.Interval = 1000;
+            this.importTimer.Tick += new System.EventHandler(this.importTimer_Tick);
+            // 
+            // historyButton
+            // 
+            this.historyButton.Location = new System.Drawing.Point(192, 12);
+            this.historyButton.Name = "historyButton";
+            this.historyButton.Size = new System.Drawing.Size(78, 25);
+            this.historyButton.TabIndex = 15;
+            this.historyButton.Text = "History";
+            this.historyButton.UseVisualStyleBackColor = true;
+            this.historyButton.Click += new System.EventHandler(this.historyButton_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.ClientSize = new System.Drawing.Size(284, 305);
+            this.Controls.Add(this.historyButton);
             this.Controls.Add(this.changeAuthorizationButton);
             this.Controls.Add(this.startupWindows);
             this.Controls.Add(this.processLabel);
@@ -294,6 +312,8 @@
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
         private System.Windows.Forms.CheckBox startupWindows;
         private System.Windows.Forms.Button changeAuthorizationButton;
+        private System.Windows.Forms.Timer importTimer;
+        private System.Windows.Forms.Button historyButton;
     }
 }
 

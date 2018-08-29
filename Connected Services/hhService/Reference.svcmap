@@ -23,6 +23,7 @@
   </MetadataSources>
   <Metadata>
     <MetadataFile FileName="ImportService31.xsd" MetadataType="Schema" ID="831a4083-7383-4024-9f89-2d8c48472abf" SourceId="1" SourceUrl="http://173.212.225.109:999/ImportService.svc?xsd=xsd1" />
+    <MetadataFile FileName="ImportService1.xsd" MetadataType="Schema" ID="a6a2a795-1530-4a55-91a3-477db13296cd" SourceId="1" SourceUrl="http://173.212.225.109:999/ImportService.svc?xsd=xsd4" />
     <MetadataFile FileName="ImportService.xsd" MetadataType="Schema" ID="04b75fc9-5b4b-4fae-a4c6-cef80d1dd62f" SourceId="1" SourceUrl="http://173.212.225.109:999/ImportService.svc?xsd=xsd3" />
     <MetadataFile FileName="ImportService3.xsd" MetadataType="Schema" ID="3ae32275-f51a-4da0-8fe5-cfc5ec8e912b" SourceId="1" SourceUrl="http://173.212.225.109:999/ImportService.svc?xsd=xsd2" />
     <MetadataFile FileName="ImportService1.disco" MetadataType="Disco" ID="bb00aed7-bf9e-4db3-b0b5-8354b9146cd4" SourceId="1" SourceUrl="http://173.212.225.109:999/ImportService.svc?disco" />

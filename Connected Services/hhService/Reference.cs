@@ -105,6 +105,9 @@ namespace ToolSL.hhService {
         private int IdPlayerField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private System.DateTime LastDateField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
         private string PasswordField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
@@ -216,6 +219,19 @@ namespace ToolSL.hhService {
                 if ((this.IdPlayerField.Equals(value) != true)) {
                     this.IdPlayerField = value;
                     this.RaisePropertyChanged("IdPlayer");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public System.DateTime LastDate {
+            get {
+                return this.LastDateField;
+            }
+            set {
+                if ((this.LastDateField.Equals(value) != true)) {
+                    this.LastDateField = value;
+                    this.RaisePropertyChanged("LastDate");
                 }
             }
         }
@@ -516,6 +532,24 @@ namespace ToolSL.hhService {
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IServiceImport/GetUpdate", ReplyAction="http://tempuri.org/IServiceImport/GetUpdateResponse")]
         System.Threading.Tasks.Task<ToolSL.hhService.UpdateData> GetUpdateAsync(string userHash);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IServiceImport/GetFileList", ReplyAction="http://tempuri.org/IServiceImport/GetFileListResponse")]
+        string[] GetFileList(string userHash, ToolSL.hhService.Player player, string beginDate, string endDate);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IServiceImport/GetFileList", ReplyAction="http://tempuri.org/IServiceImport/GetFileListResponse")]
+        System.Threading.Tasks.Task<string[]> GetFileListAsync(string userHash, ToolSL.hhService.Player player, string beginDate, string endDate);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IServiceImport/GetPlayerFileList", ReplyAction="http://tempuri.org/IServiceImport/GetPlayerFileListResponse")]
+        System.Tuple<System.DateTime, string>[] GetPlayerFileList(string userHash, string beginDate, string endDate);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IServiceImport/GetPlayerFileList", ReplyAction="http://tempuri.org/IServiceImport/GetPlayerFileListResponse")]
+        System.Threading.Tasks.Task<System.Tuple<System.DateTime, string>[]> GetPlayerFileListAsync(string userHash, string beginDate, string endDate);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IServiceImport/DownloadFile", ReplyAction="http://tempuri.org/IServiceImport/DownloadFileResponse")]
+        byte[] DownloadFile(string userHash, string filename);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IServiceImport/DownloadFile", ReplyAction="http://tempuri.org/IServiceImport/DownloadFileResponse")]
+        System.Threading.Tasks.Task<byte[]> DownloadFileAsync(string userHash, string filename);
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
@@ -671,6 +705,30 @@ namespace ToolSL.hhService {
         
         public System.Threading.Tasks.Task<ToolSL.hhService.UpdateData> GetUpdateAsync(string userHash) {
             return base.Channel.GetUpdateAsync(userHash);
+        }
+        
+        public string[] GetFileList(string userHash, ToolSL.hhService.Player player, string beginDate, string endDate) {
+            return base.Channel.GetFileList(userHash, player, beginDate, endDate);
+        }
+        
+        public System.Threading.Tasks.Task<string[]> GetFileListAsync(string userHash, ToolSL.hhService.Player player, string beginDate, string endDate) {
+            return base.Channel.GetFileListAsync(userHash, player, beginDate, endDate);
+        }
+        
+        public System.Tuple<System.DateTime, string>[] GetPlayerFileList(string userHash, string beginDate, string endDate) {
+            return base.Channel.GetPlayerFileList(userHash, beginDate, endDate);
+        }
+        
+        public System.Threading.Tasks.Task<System.Tuple<System.DateTime, string>[]> GetPlayerFileListAsync(string userHash, string beginDate, string endDate) {
+            return base.Channel.GetPlayerFileListAsync(userHash, beginDate, endDate);
+        }
+        
+        public byte[] DownloadFile(string userHash, string filename) {
+            return base.Channel.DownloadFile(userHash, filename);
+        }
+        
+        public System.Threading.Tasks.Task<byte[]> DownloadFileAsync(string userHash, string filename) {
+            return base.Channel.DownloadFileAsync(userHash, filename);
         }
     }
 }

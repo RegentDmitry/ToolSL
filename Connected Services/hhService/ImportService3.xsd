@@ -28,6 +28,7 @@
       <xs:element minOccurs="0" name="FolderName" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="FullName" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="IdPlayer" type="xs:int" />
+      <xs:element minOccurs="0" name="LastDate" type="xs:dateTime" />
       <xs:element minOccurs="0" name="Password" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="ProcessedFiles" type="xs:long" />
       <xs:element minOccurs="0" name="Role" nillable="true" type="xs:string" />

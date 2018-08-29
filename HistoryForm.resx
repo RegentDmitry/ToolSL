@@ -117,12 +117,4 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="noSummaryWarning" xml:space="preserve">
-    <value>There are no summary files in your upload. Please check PokerStars client options.
-Please, ask for help in SpinLegends support chat in Skype, if you don't know how to fix it.</value>
-  </data>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="white_icon" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\white_icon.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
 </root>

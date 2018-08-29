@@ -6,6 +6,7 @@
       <xsd:import schemaLocation="http://173.212.225.109:999/ImportService.svc?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
       <xsd:import schemaLocation="http://173.212.225.109:999/ImportService.svc?xsd=xsd2" namespace="http://schemas.datacontract.org/2004/07/ImportService" />
       <xsd:import schemaLocation="http://173.212.225.109:999/ImportService.svc?xsd=xsd3" namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
+      <xsd:import schemaLocation="http://173.212.225.109:999/ImportService.svc?xsd=xsd4" namespace="http://schemas.datacontract.org/2004/07/System" />
     </xsd:schema>
   </wsdl:types>
   <wsdl:message name="IServiceImport_CheckConnection_InputMessage">
@@ -104,6 +105,24 @@
   <wsdl:message name="IServiceImport_GetUpdate_OutputMessage">
     <wsdl:part name="parameters" element="tns:GetUpdateResponse" />
   </wsdl:message>
+  <wsdl:message name="IServiceImport_GetFileList_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetFileList" />
+  </wsdl:message>
+  <wsdl:message name="IServiceImport_GetFileList_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetFileListResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServiceImport_GetPlayerFileList_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetPlayerFileList" />
+  </wsdl:message>
+  <wsdl:message name="IServiceImport_GetPlayerFileList_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetPlayerFileListResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServiceImport_DownloadFile_InputMessage">
+    <wsdl:part name="parameters" element="tns:DownloadFile" />
+  </wsdl:message>
+  <wsdl:message name="IServiceImport_DownloadFile_OutputMessage">
+    <wsdl:part name="parameters" element="tns:DownloadFileResponse" />
+  </wsdl:message>
   <wsdl:portType name="IServiceImport">
     <wsdl:operation name="CheckConnection">
       <wsdl:input wsaw:Action="http://tempuri.org/IServiceImport/CheckConnection" message="tns:IServiceImport_CheckConnection_InputMessage" />
@@ -168,6 +187,18 @@
     <wsdl:operation name="GetUpdate">
       <wsdl:input wsaw:Action="http://tempuri.org/IServiceImport/GetUpdate" message="tns:IServiceImport_GetUpdate_InputMessage" />
       <wsdl:output wsaw:Action="http://tempuri.org/IServiceImport/GetUpdateResponse" message="tns:IServiceImport_GetUpdate_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetFileList">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServiceImport/GetFileList" message="tns:IServiceImport_GetFileList_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServiceImport/GetFileListResponse" message="tns:IServiceImport_GetFileList_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetPlayerFileList">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServiceImport/GetPlayerFileList" message="tns:IServiceImport_GetPlayerFileList_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServiceImport/GetPlayerFileListResponse" message="tns:IServiceImport_GetPlayerFileList_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="DownloadFile">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServiceImport/DownloadFile" message="tns:IServiceImport_DownloadFile_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServiceImport/DownloadFileResponse" message="tns:IServiceImport_DownloadFile_OutputMessage" />
     </wsdl:operation>
   </wsdl:portType>
   <wsdl:binding name="BasicHttpBinding_IServiceImport" type="tns:IServiceImport">
@@ -309,6 +340,33 @@
     </wsdl:operation>
     <wsdl:operation name="GetUpdate">
       <soap:operation soapAction="http://tempuri.org/IServiceImport/GetUpdate" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetFileList">
+      <soap:operation soapAction="http://tempuri.org/IServiceImport/GetFileList" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetPlayerFileList">
+      <soap:operation soapAction="http://tempuri.org/IServiceImport/GetPlayerFileList" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="DownloadFile">
+      <soap:operation soapAction="http://tempuri.org/IServiceImport/DownloadFile" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
