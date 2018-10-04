@@ -296,8 +296,10 @@ namespace ToolSL
 
             await Task.Factory.StartNew(() =>
             {
-                AnalyseFileList(Alphaleonis.Win32.Filesystem.Directory.EnumerateFiles(Options.HistoryFolder, "*.*",
-                                Alphaleonis.Win32.Filesystem.DirectoryEnumerationOptions.Recursive).ToList());
+                var filelist = Alphaleonis.Win32.Filesystem.Directory.EnumerateFiles(Options.HistoryFolder, "*.*",
+                                Alphaleonis.Win32.Filesystem.DirectoryEnumerationOptions.Recursive).ToList();
+                AnalyseFileList(filelist);
+                MoveAnalysedFiles(filelist);
 
                 TxtFileWatcher.Path = Options.HistoryFolder;
                 TxtFileWatcher.NotifyFilter = NotifyFilters.LastWrite | NotifyFilters.CreationTime | NotifyFilters.FileName | NotifyFilters.Size;
@@ -373,6 +375,41 @@ namespace ToolSL
             isSummary = lines.Any(item => item.Contains("3 players")) || lines.Any(item => item.Contains("Tournament summary"));
             var isHistory = lines.Any(item => item.Contains("3-max"));
             return isSummary || isHistory;
+        }
+
+        private void MoveAnalysedFiles(List<string> list)
+        {
+            try
+            {
+                var sentfolder = Alphaleonis.Win32.Filesystem.Directory.GetParent(Options.HistoryFolder) + "\\sentbox_toolsl";
+                sentfolder = sentfolder.Replace("\\\\", "\\");
+                foreach (var value in list)
+                {
+                    var sentfilename = value.Replace(Options.HistoryFolder, sentfolder);
+                    new Alphaleonis.Win32.Filesystem.FileInfo(sentfilename).Directory.Create();
+                    Alphaleonis.Win32.Filesystem.File.Move(value, sentfilename, Alphaleonis.Win32.Filesystem.MoveOptions.ReplaceExisting);
+                }
+                if (list.Count != 0)
+                    ClearInputDirectory(Options.HistoryFolder);
+            }
+            catch(Exception ex)
+            {
+                Logger.Error($"MoveAnalysedFiles ({list.Count}) {ex.Message} : {ex.StackTrace}");
+            }
+
+        }
+
+        private void ClearInputDirectory(string startLocation)
+        {
+            foreach (var directory in Directory.GetDirectories(startLocation))
+            {
+                ClearInputDirectory(directory);
+                if (Directory.GetFiles(directory).Length == 0 &&
+                    Directory.GetDirectories(directory).Length == 0)
+                {
+                    Directory.Delete(directory, false);
+                }
+            }
         }
 
         private void AnalyseFileList(List<string> list)
@@ -497,8 +534,7 @@ namespace ToolSL
                                                 Utils.Compress(bytes)) == "OK")
                     {
                         Alphaleonis.Win32.Filesystem.File.AppendAllText(HashFilePath, key + Environment.NewLine);
-                        hashes.Add(key);
-
+                        hashes.Add(key);                       
                         sessionCounter++;
                         if (sessionCounter == 8)
                             sessionCounter = 0;
@@ -512,7 +548,7 @@ namespace ToolSL
                 {
                     Alphaleonis.Win32.Filesystem.File.AppendAllText(HashFilePath, key + Environment.NewLine);
                     hashes.Add(key);
-                }
+                }                
             }
             catch (Exception ex)
             {
@@ -660,6 +696,7 @@ namespace ToolSL
             await Task.Factory.StartNew(() =>
             {
                 AnalyseFileList(tempList);
+                MoveAnalysedFiles(tempList);
             });
         }
 
